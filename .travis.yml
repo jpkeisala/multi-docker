@@ -1,0 +1,20 @@
+sudo: required
+servives:
+  - docker
+
+before_install:
+  - docker build -t jpkeisala/react-test -f ./client/Dockerfile.dev ./client
+script:
+  - docker run -e jpkeisala/react-test npm test
+
+after_success:
+  - docker build -t jpkeisala/multi-docker-client ./client
+  - docker build -t jpkeisala/multi-docker-nginx ./nginx
+  - docker build -t jpkeisala/multi-docker-server ./server
+  - docker build -t jpkeisala/multi-docker-worker ./worker
+# Login to Docker CLI and push to docker hub
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stin
+  - docker push jpkeisala/multi-docker-client
+  - docker push jpkeisala/multi-docker-nginx
+  - docker push jpkeisala/multi-docker-server
+  - docker push jpkeisala/multi-docker-worker
