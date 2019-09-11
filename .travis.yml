@@ -4,6 +4,7 @@ servives:
 
 before_install:
   - docker build -t jpkeisala/react-test -f ./client/Dockerfile.dev ./client
+
 script:
   - docker run -e jpkeisala/react-test npm test
 
